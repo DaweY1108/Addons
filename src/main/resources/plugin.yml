@@ -1,0 +1,4 @@
+name: Addons
+version: '${project.version}'
+main: me.dawey.addons.Addons
+api-version: '1.20'
