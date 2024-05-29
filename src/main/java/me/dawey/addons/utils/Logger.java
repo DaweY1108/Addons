@@ -1,4 +1,4 @@
-package me.dawey.addons.Utils;
+package me.dawey.addons.utils;
 
 import org.bukkit.Bukkit;
 
