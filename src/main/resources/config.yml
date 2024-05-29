@@ -1,4 +1,6 @@
 ## ADDONS CONFIG FILE ##
 
 # Discord Config
-webhook-url: "https://discordapp.com/api/webhooks/1239588575582879844/7d2k234n3N6GSK0K1ZYdOsCR8057ncPisN1Hgxim7Bnk9Q1PUWKrcycgEALjrgoJS9TU"
+discord:
+  webhook-url: ""
+  system-name: "System"
