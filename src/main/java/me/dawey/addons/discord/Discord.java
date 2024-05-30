@@ -11,9 +11,9 @@ public class Discord {
     private String webhookURL;
     private Addons plugin;
 
-    public Discord(String webhookURL, Addons plugin) {
-        this.webhookURL = webhookURL;
+    public Discord(Addons plugin) {
         this.plugin = plugin;
+        this.webhookURL = plugin.getDiscordConfig().getString("webhook.url");
     }
     public void sendSystemMessage(String message) {
         sendToDiscord(message, plugin.getMainConfig().getString("discord.system-name"), Color.BLUE, "", false);

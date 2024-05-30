@@ -6,3 +6,15 @@ webhook:
 
 bot:
   token: ""
+  guild-id: ""
+  descriptions:
+    - "play.xyz.hu"
+
+channels:
+  server-channel: ""
+
+roles:
+  default: ""
+  magician: ""
+  wizard: ""
+  mage: ""

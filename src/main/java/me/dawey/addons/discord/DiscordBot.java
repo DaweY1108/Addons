@@ -5,11 +5,18 @@ import me.dawey.addons.Addons;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiscordBot {
@@ -17,13 +24,24 @@ public class DiscordBot {
     private String token;
     private JDA bot;
     private Addons plugin;
-    public DiscordBot(String token, Addons plugin) {
-        this.token = token;
+    private String guildId;
+    private Map<String, String> roles;
+    public DiscordBot(Addons plugin) {
         this.plugin = plugin;
+        this.token = plugin.getDiscordConfig().getString("bot.token");
+        this.guildId = plugin.getDiscordConfig().getString("bot.guild-id");
+        this.roles = new HashMap<>();
+        for (String name : plugin.getDiscordConfig().getConfigurationSection("roles").getKeys(false)) {
+            roles.put(name, plugin.getDiscordConfig().getString("roles." + name));
+        }
     }
 
     public void start() {
-        bot = JDABuilder.createDefault(token).build();
+        bot = JDABuilder.createDefault(token)
+                .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .build();
         try {
             bot.awaitReady();
         } catch (InterruptedException e) {
@@ -54,10 +72,35 @@ public class DiscordBot {
         }, 0L, 20L * 30L);
     }
 
+    public void setRole(String userName, String roleName) {
+        Bukkit.getScheduler().runTaskAsynchronously(Addons.getInstance(), () -> {
+            if(!roles.containsKey(roleName)) {
+                return;
+            }
+            User user = bot.getUserByTag(userName.toLowerCase() + "#0000");
+            if (user == null) {
+                return;
+            }
+            for (String name : roles.keySet()) {
+                bot.getGuildById(guildId).removeRoleFromMember(bot.getGuildById(guildId).getMember(user), bot.getRoleById(roles.get(name))).queue();
+            }
+            bot.getGuildById(guildId).addRoleToMember(bot.getGuildById(guildId).getMember(user), bot.getRoleById(roles.get(roleName))).queue();
+        });
+
+    }
+
     public void sendSystemMessage(String message) {
         Bukkit.getScheduler().runTaskAsynchronously(Addons.getInstance(), () -> {
             TextChannel channel = bot.getTextChannelById("1233907158773399644");
             channel.sendMessage(message).queue();
         });
+    }
+
+    public List<String> getUsers() {
+        List<String> users = new ArrayList<>();
+        for (Member member : bot.getGuildById(guildId).getMembers()) {
+            users.add(member.getUser().getAsTag());
+        }
+        return users;
     }
 }

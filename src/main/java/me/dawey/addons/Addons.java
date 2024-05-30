@@ -3,7 +3,11 @@ package me.dawey.addons;
 import me.dawey.addons.config.Config;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
+import me.dawey.addons.luckperms.GroupChangeListener;
 import me.dawey.addons.utils.Logger;
+import net.luckperms.api.LuckPerms;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.awt.*;
@@ -20,11 +24,11 @@ public final class Addons extends JavaPlugin {
         Logger.getLogger().info("Starting up addons...");
         loadConfig();
         initDiscord();
-        /*RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
             LuckPerms api = provider.getProvider();
             GroupChangeListener groupChangeListener = new GroupChangeListener(api, this);
-        }*/
+        }
         Logger.getLogger().info("Addons successfully started up!");
 
     }
@@ -37,13 +41,14 @@ public final class Addons extends JavaPlugin {
 
     private void initDiscord() {
         Logger.getLogger().info("Initializing Discord Webhook...");
-        discord = new Discord(discordConfig.getString("webhook.url"), this);
+        discord = new Discord(this);
 
         Logger.getLogger().info("Starting Discord Bot...");
-        discordBot = new DiscordBot(discordConfig.getString("bot.token"), this);
+        discordBot = new DiscordBot(this);
         discordBot.start();
         discordBot.descriptions();
         discordBot.sendSystemMessage("A szerver elindult!");
+        discordBot.getUsers().forEach(user ->Logger.getLogger().info(user));
 
     }
 
@@ -53,6 +58,10 @@ public final class Addons extends JavaPlugin {
 
     public Discord getDiscord() {
         return discord;
+    }
+
+    public DiscordBot getDiscordBot() {
+        return discordBot;
     }
 
     public Config getMainConfig() {
