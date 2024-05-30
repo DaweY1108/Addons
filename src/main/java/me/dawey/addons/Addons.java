@@ -2,17 +2,8 @@ package me.dawey.addons;
 
 import me.dawey.addons.config.Config;
 import me.dawey.addons.discord.Discord;
-import me.dawey.addons.discord.DiscordWebhook;
-import me.dawey.addons.luckperms.GroupChangeListener;
+import me.dawey.addons.discord.DiscordBot;
 import me.dawey.addons.utils.Logger;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.event.LuckPermsEvent;
-import net.luckperms.api.event.user.UserDataRecalculateEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.awt.*;
@@ -20,41 +11,56 @@ import java.io.IOException;
 
 public final class Addons extends JavaPlugin {
     private static Config mainConfig;
+    private static Config discordConfig;
     private static Discord discord;
+    private static DiscordBot discordBot;
 
     @Override
     public void onEnable() {
         Logger.getLogger().info("Starting up addons...");
-        mainConfig = new Config("config.yml");
-        discord = new Discord(mainConfig.getString("discord.webhook-url"));
-        discord.sendSystemMessage("A szerver elindult!");
-        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        loadConfig();
+        initDiscord();
+        /*RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
             LuckPerms api = provider.getProvider();
             GroupChangeListener groupChangeListener = new GroupChangeListener(api, this);
-        }
+        }*/
         Logger.getLogger().info("Addons successfully started up!");
 
     }
 
-    public void onGroupChange(UserDataRecalculateEvent event) {
-
+    private void loadConfig() {
+        Logger.getLogger().info("Loading config files...");
+        mainConfig = new Config("config.yml");
+        discordConfig = new Config("discord/config.yml");
     }
 
-    @Override
-    public void onDisable() {
+    private void initDiscord() {
+        Logger.getLogger().info("Initializing Discord Webhook...");
+        discord = new Discord(discordConfig.getString("webhook.url"), this);
+
+        Logger.getLogger().info("Starting Discord Bot...");
+        discordBot = new DiscordBot(discordConfig.getString("bot.token"), this);
+        discordBot.start();
+        discordBot.descriptions();
+        discordBot.sendSystemMessage("A szerver elindult!");
+
     }
 
     public static JavaPlugin getInstance() {
         return JavaPlugin.getPlugin(Addons.class);
     }
 
-    public static Discord getDiscord() {
+    public Discord getDiscord() {
         return discord;
     }
 
-    public static Config getMainConfig() {
+    public Config getMainConfig() {
         return mainConfig;
+    }
+
+    public Config getDiscordConfig() {
+        return discordConfig;
     }
 
 

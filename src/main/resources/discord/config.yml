@@ -1,0 +1,8 @@
+### Addons Discord Bot Config ###
+webhook:
+  url: ""
+  system-name: "System"
+  system-avatar: ""
+
+bot:
+  token: ""

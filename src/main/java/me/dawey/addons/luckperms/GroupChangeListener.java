@@ -14,7 +14,7 @@ public class GroupChangeListener {
                 this.plugin,
                 UserDataRecalculateEvent.class,
                 e -> {
-                    Addons.getDiscord().sendSystemMessage("User " + e.getUser().getUsername() + " group changed to " + e.getUser().getPrimaryGroup() + "!");
+                    plugin.getDiscord().sendSystemMessage("User " + e.getUser().getUsername() + " group changed to " + e.getUser().getPrimaryGroup() + "!");
                 }
         );
     }

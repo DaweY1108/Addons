@@ -9,12 +9,14 @@ import java.io.IOException;
 
 public class Discord {
     private String webhookURL;
+    private Addons plugin;
 
-    public Discord(String webhookURL) {
+    public Discord(String webhookURL, Addons plugin) {
         this.webhookURL = webhookURL;
+        this.plugin = plugin;
     }
     public void sendSystemMessage(String message) {
-        sendToDiscord(message, Addons.getMainConfig().getString("discord.system-name"), Color.BLUE, "", false);
+        sendToDiscord(message, plugin.getMainConfig().getString("discord.system-name"), Color.BLUE, "", false);
     }
 
     private void sendToDiscord(String message, String userName, Color color, String iconURL, boolean withAuthor) {
