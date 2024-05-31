@@ -2,12 +2,15 @@ package me.dawey.addons.discord;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dawey.addons.Addons;
+import me.dawey.addons.discord.commands.AddSocial;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -37,13 +40,14 @@ public class DiscordBot {
     }
 
     public void start() {
-        bot = JDABuilder.createDefault(token)
-                .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                .build();
         try {
-            bot.awaitReady();
+            bot = JDABuilder.createDefault(token)
+                    .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    .addEventListeners(new AddSocial())
+                    .build()
+                    .awaitReady();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -56,6 +60,18 @@ public class DiscordBot {
     public void restart() {
         stop();
         start();
+    }
+
+    public void init() {
+
+        descriptions();
+    }
+
+    public void commands() {
+        bot.addEventListener(new AddSocial());
+        List<CommandData> commandData = new ArrayList<>();
+        commandData.add(Commands.slash("addsocial", "Felhaszáló összekötése a discorddal"));
+        bot.updateCommands().addCommands(commandData).queue();
     }
 
     public void descriptions() {
@@ -77,7 +93,7 @@ public class DiscordBot {
             if(!roles.containsKey(roleName)) {
                 return;
             }
-            User user = bot.getUserByTag(userName.toLowerCase() + "#0000");
+            User user = bot.getUserById(userName);
             if (user == null) {
                 return;
             }
@@ -91,7 +107,7 @@ public class DiscordBot {
 
     public void sendSystemMessage(String message) {
         Bukkit.getScheduler().runTaskAsynchronously(Addons.getInstance(), () -> {
-            TextChannel channel = bot.getTextChannelById("1233907158773399644");
+            TextChannel channel = bot.getTextChannelById(plugin.getDiscordConfig().getString("channels.server-channel"));
             channel.sendMessage(message).queue();
         });
     }

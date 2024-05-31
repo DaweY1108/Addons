@@ -18,6 +18,8 @@ import net.luckperms.api.node.types.SuffixNode;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 public class GroupChangeListener {
     private final Addons plugin;
     public GroupChangeListener(LuckPerms provider, Addons plugin) {
@@ -46,9 +48,13 @@ public class GroupChangeListener {
                 player.sendMessage(ChatColor.YELLOW + "You were given the " + permission + " permission!");*/
 
             } else if (node instanceof InheritanceNode) {
+
+
                 String groupName = ((InheritanceNode) node).getGroupName();
-                //player.sendMessage(ChatColor.YELLOW + "You were added to the " + groupName + " group!");
-                plugin.getDiscordBot().setRole(player.getName(), groupName);
+                String discordId = this.plugin.getDatabase().getDiscordId(player.getName().toLowerCase());
+                if (discordId != null && !discordId.equalsIgnoreCase(""))
+                    this.plugin.getDiscordBot().setRole(discordId, groupName);
+
 
             } else if (node instanceof PrefixNode) {
                 /*String prefix = ((PrefixNode) node).getMetaValue();

@@ -26,6 +26,23 @@
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
+          <executions>
+          <execution>
+              <id>enforce-maven-version</id>
+              <configuration>
+                  <rules>
+                      <failOnMissingUpdates>false</failOnMissingUpdates>
+                      <rules>
+                          <dependencyVersion>
+                              <groupId>net.dv8tion</groupId>
+                              <artifactId>JDA</artifactId>
+                              <version>5.0.0-beta.24</version>
+                          </dependencyVersion>
+                      </rules>
+                  </rules>
+              </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -70,6 +87,11 @@
           <id>minecraft-repo</id>
           <url>https://libraries.minecraft.net/</url>
       </repository>
+      <repository>
+          <id>dv8tion</id>
+          <name>m2-dv8tion</name>
+          <url>https://m2.dv8tion.net/releases</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -111,6 +133,17 @@
           <groupId>net.dv8tion</groupId>
           <artifactId>JDA</artifactId>
           <version>5.0.0-beta.24</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>club.minnced</groupId>
+                  <artifactId>opus-java</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+        <dependency>
+          <groupId>com.j256.ormlite</groupId>
+          <artifactId>ormlite-jdbc</artifactId>
+          <version>6.1</version>
       </dependency>
   </dependencies>
 </project>
