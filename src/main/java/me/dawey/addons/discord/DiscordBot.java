@@ -2,7 +2,7 @@ package me.dawey.addons.discord;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dawey.addons.Addons;
-import me.dawey.addons.discord.commands.AddSocial;
+import me.dawey.addons.discord.commands.Stats;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -45,9 +45,9 @@ public class DiscordBot {
                     .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                    .addEventListeners(new AddSocial())
                     .build()
                     .awaitReady();
+            init();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -63,20 +63,20 @@ public class DiscordBot {
     }
 
     public void init() {
-
         descriptions();
+        commands();
     }
 
     public void commands() {
-        bot.addEventListener(new AddSocial());
+        bot.addEventListener(new Stats(plugin));
         List<CommandData> commandData = new ArrayList<>();
-        commandData.add(Commands.slash("addsocial", "Felhaszáló összekötése a discorddal"));
+        commandData.add(Commands.slash("stats", "Szerver statisztikád megtekintése"));
         bot.updateCommands().addCommands(commandData).queue();
     }
 
     public void descriptions() {
         AtomicInteger index = new AtomicInteger(0);
-        List<String> descriptions = plugin.getDiscordConfig().getStringList("bot.descriptions");
+        List<String> descriptions = plugin.getDiscordConfig().getStringList("descriptions");
 
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, () -> {
             if (index.get() >= descriptions.size()) {

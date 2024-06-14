@@ -1,1 +1,4 @@
 ### Addons Config ###
+
+console-format: "[{group}] {name} > {message}"
+chat-format: "&%luckperms_meta_color%%luckperms_meta_formatted_prefix% &f%libreforge_profile_picture%%player_name% &f{message}"

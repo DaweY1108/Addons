@@ -18,7 +18,9 @@ import net.luckperms.api.node.types.SuffixNode;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GroupChangeListener {
     private final Addons plugin;
@@ -50,10 +52,14 @@ public class GroupChangeListener {
             } else if (node instanceof InheritanceNode) {
 
 
-                String groupName = ((InheritanceNode) node).getGroupName();
+
+
+                String groupNameAfter = ((InheritanceNode) node).getGroupName();
                 String discordId = this.plugin.getDatabase().getDiscordId(player.getName().toLowerCase());
-                if (discordId != null && !discordId.equalsIgnoreCase(""))
-                    this.plugin.getDiscordBot().setRole(discordId, groupName);
+                if (discordId != null && !discordId.equalsIgnoreCase("")) {
+                    this.plugin.getDiscordBot().setRole(discordId, groupNameAfter);
+                    this.plugin.getDiscordBot().sendSystemMessage("<@" + discordId + "> Rangja megváltozott -> " + groupNameAfter);
+                }
 
 
             } else if (node instanceof PrefixNode) {
