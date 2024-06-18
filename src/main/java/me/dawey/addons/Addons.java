@@ -9,6 +9,7 @@ import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
+import me.dawey.addons.utils.InventoryCheck;
 import me.dawey.addons.utils.Logger;
 import me.dawey.addons.vendor.PapiPlaceholders;
 import org.bukkit.Bukkit;
@@ -117,6 +118,9 @@ public final class Addons extends JavaPlugin {
 
     private void initListeners() {
         Bukkit.getPluginManager().registerEvents(new ChatListener(this), this);
+        InventoryCheck inventoryCheck = new InventoryCheck(this);
+        Bukkit.getPluginCommand("addonsinvsee").setExecutor(inventoryCheck);
+        Bukkit.getPluginManager().registerEvents(inventoryCheck, this);
     }
     public static JavaPlugin getInstance() {
         return JavaPlugin.getPlugin(Addons.class);
