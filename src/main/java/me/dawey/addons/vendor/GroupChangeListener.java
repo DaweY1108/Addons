@@ -1,4 +1,4 @@
-package me.dawey.addons.luckperms;
+package me.dawey.addons.vendor;
 
 import me.dawey.addons.Addons;
 import me.dawey.addons.utils.Logger;

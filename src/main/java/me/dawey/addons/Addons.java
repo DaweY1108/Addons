@@ -1,7 +1,5 @@
 package me.dawey.addons;
 
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.support.ConnectionSource;
 import me.dawey.addons.chat.ChatListener;
 import me.dawey.addons.commands.CommandData;
 import me.dawey.addons.commands.CustomCommand;
@@ -11,21 +9,14 @@ import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
-import me.dawey.addons.luckperms.GroupChangeListener;
 import me.dawey.addons.utils.Logger;
-import net.luckperms.api.LuckPerms;
+import me.dawey.addons.vendor.PapiPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 
-import javax.xml.crypto.Data;
-import java.awt.*;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public final class Addons extends JavaPlugin {
@@ -47,6 +38,7 @@ public final class Addons extends JavaPlugin {
         initDatabase();
         initListeners();
         initCommands();
+        initPlaceholderAPI();
         /*
         initDiscord();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -105,6 +97,10 @@ public final class Addons extends JavaPlugin {
 
         TimedCommands.start();
         StartCommands.start();
+    }
+
+    private void initPlaceholderAPI() {
+        (new PapiPlaceholders(this)).register();
     }
 
     private void initDatabase() {

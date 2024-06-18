@@ -1,4 +1,5 @@
 name: Addons
 version: '${project.version}'
+depend: [PlaceholderAPI, LuckPerms]
 main: me.dawey.addons.Addons
 api-version: '1.20'
