@@ -3,6 +3,10 @@ package me.dawey.addons;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import me.dawey.addons.chat.ChatListener;
+import me.dawey.addons.commands.CommandData;
+import me.dawey.addons.commands.CustomCommand;
+import me.dawey.addons.commands.StartCommands;
+import me.dawey.addons.commands.TimedCommands;
 import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
@@ -11,6 +15,7 @@ import me.dawey.addons.luckperms.GroupChangeListener;
 import me.dawey.addons.utils.Logger;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
@@ -19,13 +24,17 @@ import org.slf4j.Marker;
 import javax.xml.crypto.Data;
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public final class Addons extends JavaPlugin {
     private static Config mainConfig;
     private static Config discordConfig;
     private static Config databaseConfig;
-
+    public Map<String, CommandData> commands = new HashMap<>();
+    public Map<String, String> timedCommands = new HashMap<>();
+    private Map<String, CustomCommand> customCommandsMap = new HashMap<>();
     public static Database database;
     private static Discord discord;
     private static DiscordBot discordBot;
@@ -37,6 +46,7 @@ public final class Addons extends JavaPlugin {
         loadConfig();
         initDatabase();
         initListeners();
+        initCommands();
         /*
         initDiscord();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -52,7 +62,7 @@ public final class Addons extends JavaPlugin {
     @Override
     public void onDisable() {
         Logger.getLogger().info("Shutting down addons...");
-        discordBot.stop();
+        // discordBot.stop();
         Logger.getLogger().info("Addons successfully shut down!");
     }
 
@@ -73,6 +83,28 @@ public final class Addons extends JavaPlugin {
                 discordBot.sendSystemMessage("Addons elindult! Discord összekötések száma:" + database.getAllSocialData().size());
             }
         );
+    }
+
+    private void initCommands() {
+        this.timedCommands.clear();
+        this.commands.clear();
+        for (String s : getMainConfig().getConfigurationSection("timed-commands").getKeys(false))
+            this.timedCommands.put(s, getMainConfig().getString("timed-commands." + s));
+        for (String s : getMainConfig().getConfigurationSection("timed-commands-if").getKeys(false)) {
+            ConfigurationSection section = getMainConfig().getConfigurationSection("timed-commands-if." + s);
+            String condition = section.getString("condition");
+            String trueCommand = section.getString("true");
+            String falseCommand = section.getString("false");
+            CommandData cd = new CommandData(condition, trueCommand, falseCommand);
+            this.commands.put(s, cd);
+        }
+        if (!this.customCommandsMap.isEmpty())
+            this.customCommandsMap.clear();
+        for (String command : getMainConfig().getConfigurationSection("commands").getKeys(false))
+            this.customCommandsMap.put(command, new CustomCommand(command, getMainConfig().getString("commands." + command)));
+
+        TimedCommands.start();
+        StartCommands.start();
     }
 
     private void initDatabase() {

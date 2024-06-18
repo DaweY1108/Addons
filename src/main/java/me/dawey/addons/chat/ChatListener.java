@@ -48,27 +48,24 @@ public class ChatListener implements Listener, ChatRenderer {
     private Component getPlaceHolders(Component message, Player player) {
         ItemStack is = player.getItemInHand();
 
-        if (is.getType() != Material.AIR) {
-            if (message.toString().contains("[item]"
-            )) {
-                String replacement = is.getI18NDisplayName();
-                replacement = "&2" + is.getAmount() + "x " + replacement;
-                replacement = ChatColorManager.translateHexColorCodes(
-                        ChatColorManager.colorize(
-                                plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(player, replacement) : replacement
-                        )
-                );
-                Bukkit.broadcastMessage(replacement);
-                message = message.replaceText(TextReplacementConfig.builder()
-                        .match("\\[item\\]")
-                        .replacement(
-                                Component.text()
-                                        .append(Component.text(replacement))
-                                        .hoverEvent(HoverEvent.showItem(is.asHoverEvent().value()))
-                                        .build()
-                        )
-                        .build());
-            }
+        if (is.getType() != Material.AIR && message.toString().contains("[item]")) {
+            String replacement = is.getI18NDisplayName();
+            replacement = "&2" + is.getAmount() + "x " + replacement;
+            replacement = ChatColorManager.translateHexColorCodes(
+                    ChatColorManager.colorize(
+                            plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(player, replacement) : replacement
+                    )
+            );
+            Bukkit.broadcastMessage(replacement);
+            message = message.replaceText(TextReplacementConfig.builder()
+                    .match("\\[item\\]")
+                    .replacement(
+                            Component.text()
+                                    .append(Component.text(replacement))
+                                    .hoverEvent(HoverEvent.showItem(is.asHoverEvent().value()))
+                                    .build()
+                    )
+                    .build());
         }
         return message;
     }
