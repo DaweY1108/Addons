@@ -9,6 +9,7 @@ import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
+import me.dawey.addons.utils.Announces;
 import me.dawey.addons.utils.InventoryCheck;
 import me.dawey.addons.utils.Logger;
 import me.dawey.addons.vendor.PapiPlaceholders;
@@ -24,6 +25,7 @@ public final class Addons extends JavaPlugin {
     private static Config mainConfig;
     private static Config discordConfig;
     private static Config databaseConfig;
+    private static Config announceConfig;
     public Map<String, CommandData> commands = new HashMap<>();
     public Map<String, String> timedCommands = new HashMap<>();
     private Map<String, CustomCommand> customCommandsMap = new HashMap<>();
@@ -40,6 +42,7 @@ public final class Addons extends JavaPlugin {
         initListeners();
         initCommands();
         initPlaceholderAPI();
+        initAnnounces();
         /*
         initDiscord();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -64,6 +67,7 @@ public final class Addons extends JavaPlugin {
         mainConfig = new Config("config.yml");
         discordConfig = new Config("discord/config.yml");
         databaseConfig = new Config("database.yml");
+        announceConfig = new Config("announces.yml");
     }
 
     private void initDiscord() {
@@ -102,6 +106,11 @@ public final class Addons extends JavaPlugin {
 
     private void initPlaceholderAPI() {
         (new PapiPlaceholders(this)).register();
+    }
+
+    private void initAnnounces() {
+        Logger.getLogger().info("Initializing announces...");
+        new Announces(this);
     }
 
     private void initDatabase() {
@@ -148,6 +157,10 @@ public final class Addons extends JavaPlugin {
 
     public Config getDatabaseConfig() {
         return databaseConfig;
+    }
+
+    public Config getAnnounceConfig() {
+        return announceConfig;
     }
 
 
