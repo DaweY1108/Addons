@@ -9,6 +9,7 @@ import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
+import me.dawey.addons.preventions.PreventCrafting;
 import me.dawey.addons.utils.Announces;
 import me.dawey.addons.utils.InventoryCheck;
 import me.dawey.addons.utils.Logger;
@@ -113,6 +114,10 @@ public final class Addons extends JavaPlugin {
         new Announces(this);
     }
 
+    private void initPreventions() {
+        PreventCrafting preventCrafting = new PreventCrafting(this);
+    }
+
     private void initDatabase() {
         Logger.getLogger().info("Initializing database...");
         System.setProperty("com.j256.ormlite.logger.type", "LOCAL");
@@ -127,12 +132,17 @@ public final class Addons extends JavaPlugin {
 
     private void initListeners() {
         Bukkit.getPluginManager().registerEvents(new ChatListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new PreventCrafting(this), this);
         InventoryCheck inventoryCheck = new InventoryCheck(this);
         Bukkit.getPluginCommand("addonsinvsee").setExecutor(inventoryCheck);
         Bukkit.getPluginManager().registerEvents(inventoryCheck, this);
     }
     public static JavaPlugin getInstance() {
         return JavaPlugin.getPlugin(Addons.class);
+    }
+
+    public String getChatPrefix() {
+        return mainConfig.getString("chat-prefix");
     }
 
     public Discord getDiscord() {

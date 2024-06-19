@@ -6,3 +6,10 @@ api-version: '1.20'
 commands:
   addonsinvsee:
     description: Invsee command
+permissions:
+  addons.stash.admin:
+    description: Admin permission for stash command
+    default: op
+  addons.bypass.crafting:
+    description: Bypass crafting permission
+    default: op
