@@ -1,5 +1,10 @@
 package me.dawey.addons.chat;
 
+import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.items.CustomItem;
+import com.willfp.eco.core.items.Items;
+import com.willfp.eco.core.items.provider.ItemProvider;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dawey.addons.Addons;
 import net.kyori.adventure.text.Component;
@@ -22,6 +27,7 @@ public class ChatPlaceholders {
         ItemStack is = player.getItemInHand();
 
         if (is.getType() != Material.AIR && message.toString().contains("[item]")) {
+            CustomItem customItem = Items.getCustomItem(is);
             String replacement = is.getI18NDisplayName();
             replacement = "&2" + is.getAmount() + "x " + replacement;
             replacement = ChatColorManager.translateHexColorCodes(
@@ -35,7 +41,7 @@ public class ChatPlaceholders {
                     .replacement(
                             Component.text()
                                     .append(Component.text(replacement))
-                                    .hoverEvent(HoverEvent.showItem(is.asHoverEvent().value()))
+                                    .hoverEvent(HoverEvent.showItem(customItem.getItem().asHoverEvent().value()))
                                     .build()
                     )
                     .build());

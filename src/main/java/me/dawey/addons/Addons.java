@@ -9,6 +9,7 @@ import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
+import me.dawey.addons.preventions.ItemProtection;
 import me.dawey.addons.preventions.PreventCrafting;
 import me.dawey.addons.utils.Announces;
 import me.dawey.addons.utils.InventoryCheck;
@@ -16,6 +17,7 @@ import me.dawey.addons.utils.Logger;
 import me.dawey.addons.vendor.PapiPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Item;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +138,7 @@ public final class Addons extends JavaPlugin {
         InventoryCheck inventoryCheck = new InventoryCheck(this);
         Bukkit.getPluginCommand("addonsinvsee").setExecutor(inventoryCheck);
         Bukkit.getPluginManager().registerEvents(inventoryCheck, this);
+        Bukkit.getPluginManager().registerEvents(new ItemProtection(this), this);
     }
     public static JavaPlugin getInstance() {
         return JavaPlugin.getPlugin(Addons.class);

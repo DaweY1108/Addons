@@ -29,4 +29,8 @@ public class ChatColorManager {
 
         return matcher.appendTail(buffer).toString();
     }
+
+    public static String hexColorize(final String message) {
+        return translateHexColorCodes(colorize(message));
+    }
 }
