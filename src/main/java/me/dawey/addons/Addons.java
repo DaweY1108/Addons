@@ -45,7 +45,7 @@ public final class Addons extends JavaPlugin {
         initListeners();
         initCommands();
         initPlaceholderAPI();
-        initAnnounces();
+        //initAnnounces();
         /*
         initDiscord();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);

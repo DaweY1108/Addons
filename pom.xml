@@ -175,5 +175,17 @@
           <version>6.70.1</version>
           <scope>provided</scope>
       </dependency>
+      <dependency>
+          <groupId>com.willfp</groupId>
+          <artifactId>EcoEnchants</artifactId>
+          <version>11.0.0</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.willfp</groupId>
+          <artifactId>EcoItems</artifactId>
+          <version>5.0.0</version>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
 </project>
