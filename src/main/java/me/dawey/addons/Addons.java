@@ -9,15 +9,16 @@ import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
 import me.dawey.addons.discord.DiscordBot;
+import me.dawey.addons.inventory.FixedItem;
+import me.dawey.addons.inventory.Stashes;
 import me.dawey.addons.preventions.ItemProtection;
 import me.dawey.addons.preventions.PreventCrafting;
 import me.dawey.addons.utils.Announces;
-import me.dawey.addons.utils.InventoryCheck;
+import me.dawey.addons.inventory.InventoryCheck;
 import me.dawey.addons.utils.Logger;
 import me.dawey.addons.vendor.PapiPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Item;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,8 @@ public final class Addons extends JavaPlugin {
         initListeners();
         initCommands();
         initPlaceholderAPI();
-        //initAnnounces();
+        initAnnounces();
+        initStashes();
         /*
         initDiscord();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -116,6 +118,15 @@ public final class Addons extends JavaPlugin {
         new Announces(this);
     }
 
+    private void initStashes() {
+        if (getMainConfig().getBoolean("stashes-enabled")) {
+            Logger.getLogger().info("Initializing stashes...");
+            Stashes stashes = new Stashes(this);
+            Bukkit.getPluginManager().registerEvents(stashes, this);
+            Bukkit.getPluginCommand("stashes").setExecutor(stashes);
+        }
+    }
+
     private void initPreventions() {
         PreventCrafting preventCrafting = new PreventCrafting(this);
     }
@@ -139,6 +150,7 @@ public final class Addons extends JavaPlugin {
         Bukkit.getPluginCommand("addonsinvsee").setExecutor(inventoryCheck);
         Bukkit.getPluginManager().registerEvents(inventoryCheck, this);
         Bukkit.getPluginManager().registerEvents(new ItemProtection(this), this);
+        Bukkit.getPluginManager().registerEvents(new FixedItem(this, getMainConfig().getConfigurationSection("fixed-items")), this);
     }
     public static JavaPlugin getInstance() {
         return JavaPlugin.getPlugin(Addons.class);
