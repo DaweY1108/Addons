@@ -50,7 +50,6 @@ public class ChatPlaceholders {
         }
 
         is = new ItemStack(is);
-
         if (is.getType() != Material.AIR && message.toString().contains("[item]")) {
             is = manage(is);
             String replacement = is.getI18NDisplayName();

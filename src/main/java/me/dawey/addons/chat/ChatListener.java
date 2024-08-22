@@ -9,6 +9,8 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.apache.maven.model.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,6 +33,9 @@ public class ChatListener implements Listener, ChatRenderer {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncChatEvent event) {
         event.renderer(this); // Tell the event to use our renderer
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            plugin.getDiscord().sendPlayerMessage(event.getPlayer(), PlainTextComponentSerializer.plainText().serialize(event.message()));
+        });
     }
 
     @Override
@@ -41,6 +46,7 @@ public class ChatListener implements Listener, ChatRenderer {
                   plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(source, format) : format
           )
         );
+
         return Component.text(format)
                 .append(ChatPlaceholders.getPlaceHolders(message, source));
     }

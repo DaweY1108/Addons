@@ -16,9 +16,12 @@ import me.dawey.addons.preventions.PreventCrafting;
 import me.dawey.addons.utils.Announces;
 import me.dawey.addons.inventory.InventoryCheck;
 import me.dawey.addons.utils.Logger;
+import me.dawey.addons.vendor.GroupChangeListener;
 import me.dawey.addons.vendor.PapiPlaceholders;
+import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.LoggerFactory;
 
@@ -48,23 +51,22 @@ public final class Addons extends JavaPlugin {
         initPlaceholderAPI();
         initAnnounces();
         initStashes();
-        /*
         initDiscord();
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
             LuckPerms api = provider.getProvider();
             GroupChangeListener groupChangeListener = new GroupChangeListener(api, this);
         }
-         */
         Logger.getLogger().info("Addons successfully started up!");
-
+        discord.sendEmojiDiscord(getDiscordConfig().getConfigurationSection("messages.start"));
     }
 
     @Override
     public void onDisable() {
         Logger.getLogger().info("Shutting down addons...");
-        // discordBot.stop();
+        //discordBot.stop();
         Logger.getLogger().info("Addons successfully shut down!");
+        discord.sendEmojiDiscord(getDiscordConfig().getConfigurationSection("messages.stop"));
     }
 
     private void loadConfig() {
@@ -78,13 +80,14 @@ public final class Addons extends JavaPlugin {
     private void initDiscord() {
         Logger.getLogger().info("Initializing Discord Webhook...");
         discord = new Discord(this);
+        /*
         Logger.getLogger().info("Starting Discord Bot...");
         discordBot = new DiscordBot(this);
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
                 discordBot.start();
-                discordBot.sendSystemMessage("Addons elindult! Discord összekötések száma:" + database.getAllSocialData().size());
             }
         );
+         */
     }
 
     private void initCommands() {

@@ -42,6 +42,10 @@ public class PapiPlaceholders extends PlaceholderExpansion {
             if (identifier.equalsIgnoreCase(placeholder))
                 return this.plugin.getMainConfig().getString("papi_placeholders." + placeholder);
         }
+        if (identifier.equalsIgnoreCase("is_online")) {
+            return p.isOnline() ? "Igen" : "Nem";
+
+        }
         return null;
     }
 }
