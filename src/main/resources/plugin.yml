@@ -1,8 +1,9 @@
 name: Addons
 version: '${project.version}'
-depend: [PlaceholderAPI, LuckPerms, eco]
+depend: [PlaceholderAPI]
+softdepend: [eco]
 main: me.dawey.addons.Addons
-api-version: '1.20'
+api-version: '1.16'
 commands:
   addonsinvsee:
     description: Invsee command

@@ -1,20 +1,36 @@
 ### Addons Discord Bot Config ###
 webhook:
-  url: ""
-  system-name: "System"
-  system-avatar: ""
-
-bot:
-  token: ""
-  guild-id: ""
-  descriptions:
-    - "play.xyz.hu"
-
-channels:
-  server-channel: ""
-
-roles:
-  default: ""
-  magician: ""
-  wizard: ""
-  mage: ""
+  url: "https://discord.com/api/webhooks/1239588575582879844/7d2k234n3N6GSK0K1ZYdOsCR8057ncPisN1Hgxim7Bnk9Q1PUWKrcycgEALjrgoJS9TU"
+  system-name: "Rendszer"
+  system-avatar: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ca3c0184-a1bc-4cf1-8e61-2c0caa693056/dfod5oa-b33b2795-ef4e-4e09-8761-a48d3cbb3a78.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NhM2MwMTg0LWExYmMtNGNmMS04ZTYxLTJjMGNhYTY5MzA1NlwvZGZvZDVvYS1iMzNiMjc5NS1lZjRlLTRlMDktODc2MS1hNDhkM2NiYjNhNzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.VGM5PqjWYnWwRkcFGPh76ONIYkqMn4uvOmmjsgQtiVk"
+messages:
+  start:
+    name: "Rendszerüzenet"
+    avatar: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ca3c0184-a1bc-4cf1-8e61-2c0caa693056/dfod5oa-b33b2795-ef4e-4e09-8761-a48d3cbb3a78.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NhM2MwMTg0LWExYmMtNGNmMS04ZTYxLTJjMGNhYTY5MzA1NlwvZGZvZDVvYS1iMzNiMjc5NS1lZjRlLTRlMDktODc2MS1hNDhkM2NiYjNhNzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.VGM5PqjWYnWwRkcFGPh76ONIYkqMn4uvOmmjsgQtiVk"
+    title: "Szerver státusz"
+    message: "✅ A szerver elindult!"
+    color: "#00FF00"
+  stop:
+    name: "Rendszerüzenet"
+    avatar: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ca3c0184-a1bc-4cf1-8e61-2c0caa693056/dfod5oa-b33b2795-ef4e-4e09-8761-a48d3cbb3a78.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NhM2MwMTg0LWExYmMtNGNmMS04ZTYxLTJjMGNhYTY5MzA1NlwvZGZvZDVvYS1iMzNiMjc5NS1lZjRlLTRlMDktODc2MS1hNDhkM2NiYjNhNzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.VGM5PqjWYnWwRkcFGPh76ONIYkqMn4uvOmmjsgQtiVk"
+    title: "Szerver státusz"
+    message: "✅ A szerver leállt!"
+    color: "#FF0000"
+  join:
+    name: "Bejelentkezés"
+    avatar: "https://cdn-icons-png.freepik.com/512/4315/4315609.png"
+    title: "%player_name% Belépett a szerverre! :D"
+    message: ""
+    color: "#00FF00"
+  leave:
+    name: "Kijelentkezés"
+    avatar: "https://cdn-icons-png.freepik.com/512/7080/7080604.png"
+    title: "%player_name% Kilépett a szerverről :("
+    message: ""
+    color: "#FF0000"
+  death:
+    name: "Halál"
+    avatar: "https://cdn-icons-png.flaticon.com/512/2099/2099836.png"
+    title: "%player_name% Meghalt a gecibe xD"
+    message: ""
+    color: "#FF0000"

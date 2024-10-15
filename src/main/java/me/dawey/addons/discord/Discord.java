@@ -1,5 +1,6 @@
 package me.dawey.addons.discord;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.dawey.addons.Addons;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,20 +31,25 @@ public class Discord {
         sendToDiscord(message, plugin.getDiscordConfig().getString("webhook.system-name"), Color.BLUE, plugin.getDiscordConfig().getString("webhook.system-avatar"), false);
     }
 
-    public void sendEmojiDiscord(ConfigurationSection section) {
+    public void sendEmojiDiscordAsync(ConfigurationSection section, Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(Addons.getInstance(), () -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             DiscordWebhook discordWebhook = new DiscordWebhook(webhookURL);
-            discordWebhook.setUsername(plugin.getDiscordConfig().getString("webhook.system-name"));
+            discordWebhook.setUsername(section.getString("name").equalsIgnoreCase("global") ? plugin.getDiscordConfig().getString("webhook.system-name") : section.getString("name"));
             String avatarURL = section.getString("avatar").equalsIgnoreCase("global") ? plugin.getDiscordConfig().getString("webhook.system-avatar") : section.getString("avatar");
             discordWebhook.setAvatarUrl(avatarURL);
+            String message = section.getString("message");
+            String title = section.getString("title");
+            if (player != null) {
+                message = PlaceholderAPI.setPlaceholders(player, message);
+                title = PlaceholderAPI.setPlaceholders(player, title);
+            }
             // Create an embed object
             DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject()
-                    .setTitle(section.getString("title"))  // Set the title
-                    .setDescription(section.getString("message"))  // Set the description
+                    .setTitle(title)  // Set the title
+                    .setDescription(message)  // Set the description
                     .setColor(Color.decode(section.getString("color")))  // Set the color
                     .setFooter(LocalDateTime.now().format(formatter), null);  // Set footer text and time
-
             discordWebhook.addEmbed(embed);
 
             try {
@@ -54,7 +60,37 @@ public class Discord {
         });
     }
 
+    public void sendEmojiDiscordSync(ConfigurationSection section, Player player) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DiscordWebhook discordWebhook = new DiscordWebhook(webhookURL);
+        discordWebhook.setUsername(section.getString("name").equalsIgnoreCase("global") ? plugin.getDiscordConfig().getString("webhook.system-name") : section.getString("name"));
+        String avatarURL = section.getString("avatar").equalsIgnoreCase("global") ? plugin.getDiscordConfig().getString("webhook.system-avatar") : section.getString("avatar");
+        discordWebhook.setAvatarUrl(avatarURL);
+        String message = section.getString("message");
+        String title = section.getString("title");
+        if (player != null) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+            title = PlaceholderAPI.setPlaceholders(player, title);
+        }
+        // Create an embed object
+        DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject()
+                .setTitle(title)  // Set the title
+                .setDescription(message)  // Set the description
+                .setColor(Color.decode(section.getString("color")))  // Set the color
+                .setFooter(LocalDateTime.now().format(formatter), null);  // Set footer text and time
+        discordWebhook.addEmbed(embed);
+
+        try {
+            discordWebhook.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     private void sendToDiscord(String message, String userName, Color color, String iconURL, boolean withAuthor) {
+
         Bukkit.getScheduler().runTaskAsynchronously(Addons.getInstance(), () -> {
             DiscordWebhook discordWebhook = new DiscordWebhook(webhookURL);
             discordWebhook.setUsername(userName);
@@ -83,6 +119,7 @@ public class Discord {
                 e.printStackTrace();
             }
         });
+
     }
 
     public String replaceCodes(String text) {

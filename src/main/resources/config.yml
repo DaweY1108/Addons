@@ -1,4 +1,116 @@
-### Addons Config ###
+## ADDONS CONFIG FILE ##
 
-console-format: "[{group}] {name} > {message}"
-chat-format: "&%luckperms_meta_color%%luckperms_meta_formatted_prefix% &f%libreforge_profile_picture%%player_name% &f{message}"
+## Prefix
+chat-prefix: " [Addons]"
+
+## Inventory check
+inv-command-code: "mPZ1PLEHgd36"
+inv-replacement: "%player_name% Eszköztára"
+inv-hover: "Kattints a megnyitáshoz"
+
+## Announces
+announce-interval: 20
+
+
+## Chat Formatting
+
+chat-format: "&%luckperms_meta_color%%luckperms_meta_formatted_prefix% &f%player_name% &a> " #These are before the message
+
+## Commands
+
+commands:
+  discord: "/tellraw {player} [{\"text\":\"DISCORD\",\"bold\":true,\"color\":\"blue\"},{\"text\":\" | \",\"bold\":true,\"color\":\"gray\"},{\"text\":\"https://discord.gg/aDYj2t8tUV\",\"bold\":false,\"color\":\"gray\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://discord.gg/aDYj2t8tUV\"}},{\"text\":\" [Katt a linkre]\",\"bold\":false,\"color\":\"dark_gray\"}]"
+  tiktok: "/tellraw {player} [{\"text\":\"TIK\",\"bold\":true,\"color\":\"#ff0050\"},{\"text\":\"TOK\",\"bold\":true,\"color\":\"#00f2ea\"},{\"text\":\" | \",\"bold\":true,\"color\":\"gray\"},{\"text\":\"https://www.tiktok.com/\",\"bold\":false,\"color\":\"gray\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.tiktok.com/\"}},{\"text\":\" [Katt a linkre]\",\"bold\":false,\"color\":\"dark_gray\"}]"
+  weboldal: "/tellraw {player} [{\"text\":\"WEBOLDAL\",\"bold\":true,\"color\":\"#dd47ed\"},{\"text\":\" | \",\"bold\":true,\"color\":\"gray\"},{\"text\":\"https://magiclands.hu/\",\"bold\":false,\"color\":\"gray\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://magiclands.hu/\"}},{\"text\":\" [Katt a linkre]\",\"bold\":false,\"color\":\"dark_gray\"}]"
+
+start-commands:
+  - "/bc szia"
+
+timed-commands:
+  03;00;50: "/title @a title {\"text\":\"Újraindítás...\", \"bold\":true, \"italic\":true, \"color\":\"red\"}"
+  15;00;00: "/ecocrates giveall hyper 1"
+  16;00;00: "/ecocrates giveall hyper 1"
+  18;00;00: "/ecocrates giveall hyper 1"
+  19;00;00: "/ecocrates giveall hyper 1"
+
+timed-commands-if:
+  17;00;00:
+    #usage
+    #%placeholder% > value
+    #
+    #operators:
+    #<, >, <=, >=, ==, !=,
+    condition: "%server_online% > 6"
+    true: "/ecocrates giveall growing 1"
+    false: "/bc Túl kevés játékos van a Growing keyallhoz. Minimum 6 játékos szükséges."
+  20;00;00:
+    #usage
+    #%placeholder% > value
+    #
+    #operators:
+    #<, >, <=, >=, ==, !=,
+    condition: "%server_online% > 6"
+    true: "/ecocrates giveall growing 1"
+    false: "/bc Túl kevés játékos van a Growing keyallhoz. Minimum 6 játékos szükséges."
+
+## Placeholders
+
+papi_placeholders:
+  server_name: "MagicLands"
+  web: "www.magiclands.hu"
+  skyblock: "SkyBlock"
+
+chat_placeholders:
+  balance: "Egyenlegem: &a%vault_eco_balance_formatted%&f %oraxen_pipa%"
+  money: "Egyenlegem: &a%vault_eco_balance_formatted%&f %oraxen_pipa%"
+
+## Crafting Blocking
+
+blocked-crafting:
+  - "LADDER"
+
+not-craftable: "Ez az item nem lecraftolható!"
+
+## Item Protection
+
+protected-identifiers:
+  - "Védett tárgy"
+  - "Krumpli buzi"
+
+item-protected: "Ez a tárgy védett!"
+
+## Fixed Items
+
+## SLOTS
+## 9  10 11 12 13 14 15 16 17
+## 18 19 20 21 22 23 24 25 26
+## 27 28 29 30 31 32 33 34 35
+## 0  1  2  3  4  5  6  7  8
+
+
+fixed-items:
+  item1:
+    slot: 0;
+    commands:
+      - "[console]bc szia"
+    item:
+      id: "APPLE"
+
+
+## Stashes
+stashes-enabled: true
+stashes-prefix: "&eTároló » "
+no-permission: "&cNincs jogod ehhez a parancshoz!"
+no-stash: "&7Nincs ilyen tároló"
+stash-exists: "&7Már létezik ilyen tároló"
+stash-edited: "&7Tároló szerkesztve ezzel az ID-vel: &a{stash-id}"
+stash-created: "&7Tároló létrehozva ezzel az ID-vel: &a{stash-id}"
+stash-removed: "&7Tároló eltávolítva ezzel az ID-vel: &a{stash-id}"
+stash-opened: "&7Tároló megnyitva ezzel az ID-vel: &a{stash-id}&7, A tároló innentől kezdve nem elérhető!"
+stash-list-header: "&7Tárolók listája:"
+stash-list-item: "&7- &e{stash-id}"
+
+
+
+
+

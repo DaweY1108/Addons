@@ -10,6 +10,7 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -22,61 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CustomItem extends ItemStack {
+public class CustomItem {
 
-        private ConfigurationSection configSection;
-
-        public CustomItem(ConfigurationSection section) {
-            this.configSection = section;
-            createItem(1);
-        }
-        public CustomItem(ConfigurationSection section, int amount) {
-            this.configSection = section;
-            createItem(amount);
-        }
-
-        public ConfigurationSection saveToSection(String sectionName, ConfigurationSection parentSection) {
-            ConfigurationSection section = parentSection.createSection(sectionName);
-            section.set("id", this.getType().toString().toLowerCase());
-            section.set("amount", this.getAmount());
-            if (this.getItemMeta().hasDisplayName()) section.set("name", this.getItemMeta().getDisplayName());
-
-            return section;
-        }
-
-        public List<String> customLore;
-
-        private void createItem(int amount) {
-            if (configSection == null) {
-                this.setType(Material.AIR);
-                this.setAmount(1);
-                return;
-            }
+        public static ItemStack createItem(ConfigurationSection configSection, int amount) {
+            ItemStack item = new ItemStack(Material.AIR);
 
             if (Material.getMaterial(configSection.getString("id")) == null) {
                 Logger.getLogger().warn("Nincs ilyen material: " + configSection.getString("id"));
+                return item;
             }
+            item = new ItemStack(Material.getMaterial(configSection.getString("id")));
 
             //Item ID-k kezelése
-            this.setType(Material.getMaterial(configSection.getString("id")));
-            this.setAmount(amount);
-
-            if (configSection.contains("mobType") && this.getType() == Material.SPAWNER) {
-                BlockStateMeta bsm = (BlockStateMeta) this.getItemMeta();
-                CreatureSpawner cs = (CreatureSpawner) bsm.getBlockState();
-                cs.setSpawnedType(EntityType.valueOf(configSection.getString("mobType")));
-                cs.setSpawnCount(0);
-                bsm.setBlockState(cs);
-                this.setItemMeta(bsm);
-            }
+            item.setAmount(amount);
 
             //Meta inicalizálása
-            ItemMeta meta = this.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             boolean modifiedMeta = false;
 
             //Item mennyiseg kezelese
             if (configSection.contains("amount")) {
-                this.setAmount(configSection.getInt("amount"));
+                item.setAmount(configSection.getInt("amount"));
             }
 
             //Item nevenek kezelese
@@ -89,10 +56,8 @@ public class CustomItem extends ItemStack {
             if (configSection.contains("lore")) {
                 List<String> dummy = configSection.getStringList("lore");
                 List<String> lore = new ArrayList<String>();
-                customLore = new ArrayList<>();
                 for (String s : dummy) {
                     lore.add(ChatColorManager.colorize(s));
-                    customLore.add(ChatColorManager.colorize(s));
                 }
                 meta.setLore(lore);
                 modifiedMeta = true;
@@ -111,50 +76,122 @@ public class CustomItem extends ItemStack {
                     String enchantmentName = enchantmentString.split(":")[0];
                     int enchantmentLevel = Integer.valueOf(enchantmentString.split(":")[1]);
                     switch (enchantmentName) {
-                        case "arrowdamage":
-                            meta.addEnchant(Enchantment.ARROW_DAMAGE, enchantmentLevel, true);
+                        case "AQUA_AFFINITY":
+                            meta.addEnchant(Enchantment.AQUA_AFFINITY, enchantmentLevel, true);
                             break;
-                        case "arrowfire":
-                            meta.addEnchant(Enchantment.ARROW_FIRE, enchantmentLevel, true);
+                        case "BANE_OF_ARTHROPODS":
+                            meta.addEnchant(Enchantment.BANE_OF_ARTHROPODS, enchantmentLevel, true);
                             break;
-                        case "arrowinfinite":
-                            meta.addEnchant(Enchantment.ARROW_INFINITE, enchantmentLevel, true);
+                        case "BINDING_CURSE":
+                            meta.addEnchant(Enchantment.BINDING_CURSE, enchantmentLevel, true);
                             break;
-                        case "arrowknockback":
-                            meta.addEnchant(Enchantment.ARROW_KNOCKBACK, enchantmentLevel, true);
+                        case "BLAST_PROTECTION":
+                            meta.addEnchant(Enchantment.BLAST_PROTECTION, enchantmentLevel, true);
                             break;
-                        case "damage":
-                            meta.addEnchant(Enchantment.DAMAGE_ALL, enchantmentLevel, true);
+                        case "BREACH":
+                            meta.addEnchant(Enchantment.BREACH, enchantmentLevel, true);
                             break;
-                        case "digspeed":
-                            meta.addEnchant(Enchantment.DIG_SPEED, enchantmentLevel, true);
+                        case "CHANNELING":
+                            meta.addEnchant(Enchantment.CHANNELING, enchantmentLevel, true);
                             break;
-                        case "durability":
-                            meta.addEnchant(Enchantment.DURABILITY, enchantmentLevel, true);
+                        case "DENSITY":
+                            meta.addEnchant(Enchantment.DENSITY, enchantmentLevel, true);
                             break;
-                        case "fireaspect":
+                        case "DEPTH_STRIDER":
+                            meta.addEnchant(Enchantment.DEPTH_STRIDER, enchantmentLevel, true);
+                            break;
+                        case "EFFICIENCY":
+                            meta.addEnchant(Enchantment.EFFICIENCY, enchantmentLevel, true);
+                            break;
+                        case "FEATHER_FALLING":
+                            meta.addEnchant(Enchantment.FEATHER_FALLING, enchantmentLevel, true);
+                            break;
+                        case "FIRE_ASPECT":
                             meta.addEnchant(Enchantment.FIRE_ASPECT, enchantmentLevel, true);
                             break;
-                        case "knockback":
+                        case "FIRE_PROTECTION":
+                            meta.addEnchant(Enchantment.FIRE_PROTECTION, enchantmentLevel, true);
+                            break;
+                        case "FLAME":
+                            meta.addEnchant(Enchantment.FLAME, enchantmentLevel, true);
+                            break;
+                        case "FORTUNE":
+                            meta.addEnchant(Enchantment.FORTUNE, enchantmentLevel, true);
+                            break;
+                        case "FROST_WALKER":
+                            meta.addEnchant(Enchantment.FROST_WALKER, enchantmentLevel, true);
+                            break;
+                        case "IMPALING":
+                            meta.addEnchant(Enchantment.IMPALING, enchantmentLevel, true);
+                            break;
+                        case "INFINITY":
+                            meta.addEnchant(Enchantment.INFINITY, enchantmentLevel, true);
+                            break;
+                        case "KNOCKBACK":
                             meta.addEnchant(Enchantment.KNOCKBACK, enchantmentLevel, true);
                             break;
-                        case "lootbonusblock":
-                            meta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, enchantmentLevel, true);
+                        case "LOOTING":
+                            meta.addEnchant(Enchantment.LOOTING, enchantmentLevel, true);
                             break;
-                        case "lootbonusmob":
-                            meta.addEnchant(Enchantment.LOOT_BONUS_MOBS, enchantmentLevel, true);
+                        case "LOYALTY":
+                            meta.addEnchant(Enchantment.LOYALTY, enchantmentLevel, true);
                             break;
-                        case "luck":
-                            meta.addEnchant(Enchantment.LUCK, enchantmentLevel, true);
+                        case "LUCK_OF_THE_SEA":
+                            meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, enchantmentLevel, true);
                             break;
-                        case "protectionfall":
-                            meta.addEnchant(Enchantment.PROTECTION_FALL, enchantmentLevel, true);
+                        case "LURE":
+                            meta.addEnchant(Enchantment.LURE, enchantmentLevel, true);
                             break;
-                        case "protectionfire":
-                            meta.addEnchant(Enchantment.PROTECTION_FALL, enchantmentLevel, true);
+                        case "MENDING":
+                            meta.addEnchant(Enchantment.MENDING, enchantmentLevel, true);
                             break;
-                        case "silktouch":
-                            meta.addEnchant(Enchantment.SILK_TOUCH, enchantmentLevel, true);
+                        case "MULTISHOT":
+                            meta.addEnchant(Enchantment.MULTISHOT, enchantmentLevel, true);
+                            break;
+                        case "PIERCING":
+                            meta.addEnchant(Enchantment.PIERCING, enchantmentLevel, true);
+                            break;
+                        case "POWER":
+                            meta.addEnchant(Enchantment.POWER, enchantmentLevel, true);
+                            break;
+                        case "PROJECTILE_PROTECTION":
+                            meta.addEnchant(Enchantment.PROJECTILE_PROTECTION, enchantmentLevel, true);
+                            break;
+                        case "PROTECTION":
+                            meta.addEnchant(Enchantment.PROTECTION, enchantmentLevel, true);
+                            break;
+                        case "PUNCH":
+                            meta.addEnchant(Enchantment.PUNCH, enchantmentLevel, true);
+                            break;
+                        case "QUICK_CHARGE":
+                            meta.addEnchant(Enchantment.QUICK_CHARGE, enchantmentLevel, true);
+                            break;
+                        case "RESPIRATION":
+                            meta.addEnchant(Enchantment.RESPIRATION, enchantmentLevel, true);
+                            break;
+                        case "RIPTIDE":
+                            meta.addEnchant(Enchantment.RIPTIDE, enchantmentLevel, true);
+                            break;
+                        case "SHARPNESS":
+                            meta.addEnchant(Enchantment.SHARPNESS, enchantmentLevel, true);
+                            break;
+                        case "SMITE":
+                            meta.addEnchant(Enchantment.SMITE, enchantmentLevel, true);
+                            break;
+                        case "SWEEPING_EDGE":
+                            meta.addEnchant(Enchantment.SWEEPING_EDGE, enchantmentLevel, true);
+                            break;
+                        case "THORNS":
+                            meta.addEnchant(Enchantment.THORNS, enchantmentLevel, true);
+                            break;
+                        case "UNBREAKING":
+                            meta.addEnchant(Enchantment.UNBREAKING, enchantmentLevel, true);
+                            break;
+                        case "VANISHING_CURSE":
+                            meta.addEnchant(Enchantment.VANISHING_CURSE, enchantmentLevel, true);
+                            break;
+                        default:
+                            System.out.println("Ismeretlen enchantment: " + enchantmentName);
                             break;
                     }
                 }
@@ -218,8 +255,9 @@ public class CustomItem extends ItemStack {
 
             //Itemmeta hozzáadása az itemhez
             if (modifiedMeta) {
-                this.setItemMeta(meta);
+                item.setItemMeta(meta);
             }
+            return item;
         }
 
     }

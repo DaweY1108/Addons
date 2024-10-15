@@ -46,25 +46,8 @@ public class CustomCommand extends Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player)sender;
-            runCommand(this.execute, p);
+            CommandExecutor.runCommand(this.execute, p, false);
         }
         return false;
-    }
-
-    private static void runCommand(String command, Player p) {
-        if (command.contains("{player}"))
-            command = command.replace("{player}", p.getName());
-        if (command.contains("{location}"))
-            command = command.replace("{location}", locationString(p.getLocation()));
-        if (command.charAt(0) == '/')
-            command = command.substring(1);
-        Bukkit.dispatchCommand((CommandSender)Bukkit.getConsoleSender(), command);
-    }
-
-    private static String locationString(Location loc) {
-        String x = String.valueOf(loc.getBlockX());
-        String y = String.valueOf(loc.getBlockY());
-        String z = String.valueOf(loc.getBlockZ());
-        return x + " " + y + " " + z;
     }
 }

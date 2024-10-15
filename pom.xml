@@ -112,7 +112,7 @@
       <dependency>
           <groupId>io.papermc.paper</groupId>
           <artifactId>paper-api</artifactId>
-          <version>1.21-R0.1-SNAPSHOT</version>
+          <version>1.21.1-R0.1-SNAPSHOT</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
@@ -142,17 +142,6 @@
           <artifactId>api</artifactId>
           <version>5.4</version>
           <scope>provided</scope>
-      </dependency>
-      <dependency>
-          <groupId>net.dv8tion</groupId>
-          <artifactId>JDA</artifactId>
-          <version>5.0.0-beta.24</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>club.minnced</groupId>
-                  <artifactId>opus-java</artifactId>
-              </exclusion>
-          </exclusions>
       </dependency>
       <dependency>
           <groupId>org.beryx</groupId>

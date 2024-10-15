@@ -8,15 +8,15 @@ import me.dawey.addons.commands.TimedCommands;
 import me.dawey.addons.config.Config;
 import me.dawey.addons.database.Database;
 import me.dawey.addons.discord.Discord;
-import me.dawey.addons.discord.DiscordBot;
 import me.dawey.addons.inventory.FixedItem;
 import me.dawey.addons.inventory.Stashes;
+import me.dawey.addons.player.PlayerListener;
+import me.dawey.addons.plugincommands.AddonsCommand;
 import me.dawey.addons.preventions.ItemProtection;
 import me.dawey.addons.preventions.PreventCrafting;
 import me.dawey.addons.utils.Announces;
 import me.dawey.addons.inventory.InventoryCheck;
 import me.dawey.addons.utils.Logger;
-import me.dawey.addons.vendor.GroupChangeListener;
 import me.dawey.addons.vendor.PapiPlaceholders;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
@@ -38,8 +38,7 @@ public final class Addons extends JavaPlugin {
     private Map<String, CustomCommand> customCommandsMap = new HashMap<>();
     public static Database database;
     private static Discord discord;
-    private static DiscordBot discordBot;
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(net.dv8tion.jda.internal.requests.WebSocketClient.class);
+    private Announces announces;
 
     @Override
     public void onEnable() {
@@ -52,21 +51,16 @@ public final class Addons extends JavaPlugin {
         initAnnounces();
         initStashes();
         initDiscord();
-        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        if (provider != null) {
-            LuckPerms api = provider.getProvider();
-            GroupChangeListener groupChangeListener = new GroupChangeListener(api, this);
-        }
+        initPreventions();
         Logger.getLogger().info("Addons successfully started up!");
-        discord.sendEmojiDiscord(getDiscordConfig().getConfigurationSection("messages.start"));
+        discord.sendEmojiDiscordAsync(getDiscordConfig().getConfigurationSection("messages.start"), null);
     }
 
     @Override
     public void onDisable() {
         Logger.getLogger().info("Shutting down addons...");
-        //discordBot.stop();
         Logger.getLogger().info("Addons successfully shut down!");
-        discord.sendEmojiDiscord(getDiscordConfig().getConfigurationSection("messages.stop"));
+        discord.sendEmojiDiscordSync(getDiscordConfig().getConfigurationSection("messages.stop"), null);
     }
 
     private void loadConfig() {
@@ -80,14 +74,6 @@ public final class Addons extends JavaPlugin {
     private void initDiscord() {
         Logger.getLogger().info("Initializing Discord Webhook...");
         discord = new Discord(this);
-        /*
-        Logger.getLogger().info("Starting Discord Bot...");
-        discordBot = new DiscordBot(this);
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-                discordBot.start();
-            }
-        );
-         */
     }
 
     private void initCommands() {
@@ -108,6 +94,7 @@ public final class Addons extends JavaPlugin {
         for (String command : getMainConfig().getConfigurationSection("commands").getKeys(false))
             this.customCommandsMap.put(command, new CustomCommand(command, getMainConfig().getString("commands." + command)));
 
+        Bukkit.getPluginCommand("addons").setExecutor(new AddonsCommand(this));
         TimedCommands.start();
         StartCommands.start();
     }
@@ -118,7 +105,7 @@ public final class Addons extends JavaPlugin {
 
     private void initAnnounces() {
         Logger.getLogger().info("Initializing announces...");
-        new Announces(this);
+        announces = new Announces(this);
     }
 
     private void initStashes() {
@@ -136,11 +123,9 @@ public final class Addons extends JavaPlugin {
 
     private void initDatabase() {
         Logger.getLogger().info("Initializing database...");
-        System.setProperty("com.j256.ormlite.logger.type", "LOCAL");
-        System.setProperty("com.j256.ormlite.logger.level", "WARN");
+        System.setProperty("com.j256.ormlite.logger.level", "ERROR");
         try {
             database = new Database(this);
-            database.initTables();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,10 +138,29 @@ public final class Addons extends JavaPlugin {
         Bukkit.getPluginCommand("addonsinvsee").setExecutor(inventoryCheck);
         Bukkit.getPluginManager().registerEvents(inventoryCheck, this);
         Bukkit.getPluginManager().registerEvents(new ItemProtection(this), this);
-        Bukkit.getPluginManager().registerEvents(new FixedItem(this, getMainConfig().getConfigurationSection("fixed-items")), this);
+        ConfigurationSection fixedItemSection = getMainConfig().getConfigurationSection("fixed-items");
+        if (fixedItemSection != null) {
+            FixedItem fixedItem = new FixedItem(this, fixedItemSection);
+            Bukkit.getPluginManager().registerEvents(fixedItem, this);
+        }
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+    }
+
+
+    public void reload() {
+        loadConfig();
+        initCommands();
+        initPlaceholderAPI();
+        initAnnounces();
+        initStashes();
+        initDiscord();
     }
     public static JavaPlugin getInstance() {
         return JavaPlugin.getPlugin(Addons.class);
+    }
+
+    public boolean isEcoEnabled () {
+        return Bukkit.getPluginManager().isPluginEnabled("eco");
     }
 
     public String getChatPrefix() {
@@ -165,10 +169,6 @@ public final class Addons extends JavaPlugin {
 
     public Discord getDiscord() {
         return discord;
-    }
-
-    public DiscordBot getDiscordBot() {
-        return discordBot;
     }
 
     public Database getDatabase() {
